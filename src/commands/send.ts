@@ -3,6 +3,8 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   Client,
+  EmbedBuilder,
+  TextChannel,
 } from "discord.js";
 
 const command: Command = {
@@ -13,6 +15,12 @@ const command: Command = {
       sub
         .setName("plain")
         .setDescription("Send a plain message")
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("The channel to send the message to")
+            .setRequired(false),
+        )
         .addStringOption((option) =>
           option
             .setName("message")
@@ -25,6 +33,12 @@ const command: Command = {
       sub
         .setName("embed")
         .setDescription("Send an embed message")
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("The channel to send the embed to")
+            .setRequired(false),
+        )
         .addStringOption((option) =>
           option
             .setName("json")
@@ -41,14 +55,33 @@ const command: Command = {
 
     if (subcommand === "plain") {
       const message = interaction.options.getString("message", true);
-      await interaction.reply(message);
+      const channel = interaction.options.getChannel("channel", false);
+      
+      if (channel) {
+        await (channel as TextChannel).send(message);
+      } else {
+        await interaction.reply(message);
+      }
     } else if (subcommand === "embed") {
       const jsonString = interaction.options.getString("json", true);
+      const channel = interaction.options.getChannel("channel", false);
 
       try {
-        const embedData = JSON.parse(jsonString);
-        await interaction.reply({ embeds: [embedData] });
+        const json = JSON.parse(jsonString);
+
+        if (json.color && typeof json.color === "string") {
+          json.color = parseInt(json.color.replace(/^#/, ""), 16);
+        }
+
+        const embed = new EmbedBuilder(json);
+        
+        if (channel) {
+          await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+          await interaction.reply({ embeds: [embed] });
+        }
       } catch (error) {
+        console.error("Error parsing JSON:", error);
         await interaction.reply({
           content: "Failed to parse JSON. Please check your input.",
           ephemeral: true,
