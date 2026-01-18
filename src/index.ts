@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { Client, GatewayIntentBits } from "discord.js";
+import { registerCommands } from "@/handlers/command-handler.js";
 
 if (!process.env.DISCORD_TOKEN || !process.env.DISCORD_CLIENT_ID) {
   console.warn("Please set required environment variables");
@@ -16,3 +17,5 @@ const client = new Client({
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+await registerCommands(client);
