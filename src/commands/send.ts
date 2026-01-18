@@ -99,7 +99,6 @@ const command: Command = {
           await interaction.reply({ embeds: [embed] });
         }
       } catch (error) {
-        console.error("Error parsing JSON:", error);
         await interaction.reply({
           content: "Failed to parse JSON. Please check your input.",
           ephemeral: true,
