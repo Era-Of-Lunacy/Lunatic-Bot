@@ -1,0 +1,23 @@
+image: docker:29.2.0-rc.1-dind-alpine3.23
+
+services:
+  - docker:dind
+
+stages:
+  - docker
+
+variables:
+  DOCKER_TLS_CERTDIR: ""
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+  IMAGE_TAG: $CI_COMMIT_TAG
+
+docker-publish:
+  stage: docker
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
+    - docker tag "$IMAGE_NAME:$IMAGE_TAG" "$IMAGE_NAME:latest"
+    - docker push "$IMAGE_NAME:$IMAGE_TAG"
+    - docker push "$IMAGE_NAME:latest"
+  rules:
+    - if: "$CI_COMMIT_TAG"
