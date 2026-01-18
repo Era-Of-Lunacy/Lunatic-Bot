@@ -55,6 +55,14 @@ const command: Command = {
   async execute(_: Client, interaction: ChatInputCommandInteraction) {
     const subcommand = interaction.options.getSubcommand();
 
+    if (interaction.user.id !== "987893393441054720") {
+      await interaction.reply({
+        content: "You don't have permission to use this command!",
+        ephemeral: true,
+      });
+      return;
+    }
+
     if (subcommand === "plain") {
       const message = interaction.options.getString("message", true);
       const channel = interaction.options.getChannel("channel", false);
