@@ -6,6 +6,7 @@ import {
   REST,
   Routes,
   SlashCommandBuilder,
+  type SlashCommandSubcommandsOnlyBuilder,
   type RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "discord.js";
 import fs from "fs";
@@ -13,7 +14,7 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 
 export interface Command {
-  data: SlashCommandBuilder;
+  data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
   execute: (
     client: Client,
     interaction: ChatInputCommandInteraction,
