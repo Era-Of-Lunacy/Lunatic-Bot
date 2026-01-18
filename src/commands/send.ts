@@ -15,17 +15,18 @@ const command: Command = {
       sub
         .setName("plain")
         .setDescription("Send a plain message")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("The channel to send the message to")
-            .setRequired(false),
-        )
+
         .addStringOption((option) =>
           option
             .setName("message")
             .setDescription("The message to send")
             .setRequired(true),
+        )
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("The channel to send the message to")
+            .setRequired(false),
         );
       return sub;
     })
@@ -33,12 +34,7 @@ const command: Command = {
       sub
         .setName("embed")
         .setDescription("Send an embed message")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("The channel to send the embed to")
-            .setRequired(false),
-        )
+
         .addStringOption((option) =>
           option
             .setName("json")
@@ -46,6 +42,12 @@ const command: Command = {
               "The JSON of the embed (more info: https://embed.dan.onl/)",
             )
             .setRequired(true),
+        )
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("The channel to send the embed to")
+            .setRequired(false),
         );
       return sub;
     }),
@@ -56,7 +58,7 @@ const command: Command = {
     if (subcommand === "plain") {
       const message = interaction.options.getString("message", true);
       const channel = interaction.options.getChannel("channel", false);
-      
+
       if (channel) {
         await (channel as TextChannel).send(message);
       } else {
@@ -74,7 +76,7 @@ const command: Command = {
         }
 
         const embed = new EmbedBuilder(json);
-        
+
         if (channel) {
           await (channel as TextChannel).send({ embeds: [embed] });
         } else {
