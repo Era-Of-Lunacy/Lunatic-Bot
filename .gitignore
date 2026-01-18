@@ -1,0 +1,29 @@
+# Dependencies
+
+node_modules
+
+# Build artifacts
+/dist
+/build
+/*.js
+/*.js.map
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example # keep the example file in version control
+
+# OS and Editor files
+.DS_Store # macOS
+.vscode/ # VS Code configuration (optional, depending on team preference)
+.nyc_output # coverage directory
+coverage # coverage directory
+
+# TypeScript cache file
+.tsbuildinfo
