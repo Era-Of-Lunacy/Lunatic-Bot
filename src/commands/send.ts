@@ -61,6 +61,10 @@ const command: Command = {
 
       if (channel) {
         await (channel as TextChannel).send(message);
+        await interaction.reply({
+          content: "Message sent successfully!",
+          ephemeral: true,
+        });
       } else {
         await interaction.reply(message);
       }
@@ -79,6 +83,10 @@ const command: Command = {
 
         if (channel) {
           await (channel as TextChannel).send({ embeds: [embed] });
+          await interaction.reply({
+            content: "Embed sent successfully!",
+            ephemeral: true,
+          });
         } else {
           await interaction.reply({ embeds: [embed] });
         }
