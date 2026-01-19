@@ -12,4 +12,4 @@ export default {
       type: ActivityType.Custom,
     });
   },
-} as Event;
+} as Event<"clientReady">;
