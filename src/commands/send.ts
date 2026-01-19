@@ -1,3 +1,4 @@
+import { getGuild } from "@/db/guilds.js";
 import type { Command } from "@/handlers/command-handler.js";
 import {
   SlashCommandBuilder,
@@ -55,7 +56,12 @@ const command: Command = {
   async execute(_: Client, interaction: ChatInputCommandInteraction) {
     const subcommand = interaction.options.getSubcommand();
 
-    if (interaction.user.id !== "987893393441054720") {
+    const guild = await getGuild(interaction.guildId!);
+
+    if (
+      interaction.user.id !== interaction.guild?.ownerId &&
+      !guild[0]?.moderators.includes(interaction.user.id)
+    ) {
       await interaction.reply({
         content: "You don't have permission to use this command!",
         ephemeral: true,
