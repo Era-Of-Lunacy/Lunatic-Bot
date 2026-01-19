@@ -5,6 +5,10 @@ export default {
   name: "guildCreate",
   once: false,
   async execute(_, guild) {
-    insertGuild(guild.id);
+    try {
+      insertGuild(guild.id);
+    } catch (error) {
+      console.error(`Error inserting guild ${guild.id}`);
+    }
   },
 } as Event<"guildCreate">;
