@@ -1,4 +1,4 @@
-import { updateGuild } from "@/db/guilds.js";
+import { getGuild, updateGuild } from "@/db/guilds.js";
 import type { Command } from "@/handlers/command-handler.js";
 import { SlashCommandBuilder } from "discord.js";
 
@@ -29,9 +29,35 @@ const command: Command = {
         ),
     ),
   execute: async (_, interaction) => {
+    const guild = await getGuild(interaction.guildId!);
+
+    if (
+      interaction.user.id !== interaction.guild?.ownerId &&
+      !guild[0]?.moderators.includes(interaction.user.id)
+    ) {
+      await interaction.reply({
+        content: "You don't have permission to use this command!",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (
+      guild[0]?.moderators.includes(interaction.options.getUser("user")!.id)
+    ) {
+      await interaction.reply({
+        content: "User is already a moderator!",
+        ephemeral: true,
+      });
+      return;
+    }
+
     try {
       await updateGuild(interaction.guildId!, {
-        moderators: [interaction.options.getUser("user")!.id],
+        moderators: [
+          ...guild[0]?.moderators!,
+          interaction.options.getUser("user")!.id,
+        ],
       });
     } catch (error) {
       console.error(`Error updating guild ${interaction.guildId}`);
