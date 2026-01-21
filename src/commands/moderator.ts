@@ -1,6 +1,6 @@
 import { getGuild, updateGuild } from "@/db/guilds.js";
 import type { Command } from "@/handlers/command-handler.js";
-import { SlashCommandBuilder } from "discord.js";
+import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
 const command: Command = {
   data: new SlashCommandBuilder()
@@ -37,7 +37,7 @@ const command: Command = {
     ) {
       await interaction.reply({
         content: "You don't have permission to use this command!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -45,7 +45,7 @@ const command: Command = {
     if (guild.moderators.includes(interaction.options.getUser("user")!.id)) {
       await interaction.reply({
         content: "User is already a moderator!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -59,7 +59,7 @@ const command: Command = {
 
     await interaction.reply({
       content: "Moderator added successfully!",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

@@ -6,6 +6,7 @@ import {
   Client,
   EmbedBuilder,
   TextChannel,
+  MessageFlags,
 } from "discord.js";
 
 const command: Command = {
@@ -64,7 +65,7 @@ const command: Command = {
     ) {
       await interaction.reply({
         content: "You don't have permission to use this command!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -77,7 +78,7 @@ const command: Command = {
         await (channel as TextChannel).send(message);
         await interaction.reply({
           content: "Message sent successfully!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else {
         await interaction.reply(message);
@@ -99,7 +100,7 @@ const command: Command = {
           await (channel as TextChannel).send({ embeds: [embed] });
           await interaction.reply({
             content: "Embed sent successfully!",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         } else {
           await interaction.reply({ embeds: [embed] });
@@ -107,7 +108,7 @@ const command: Command = {
       } catch (error) {
         await interaction.reply({
           content: "Failed to parse JSON. Please check your input.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
     }
