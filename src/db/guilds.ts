@@ -1,22 +1,28 @@
-import sql from "@/db/db.js";
+import type { Database } from "@/database.types.js";
+import { createClient } from "@supabase/supabase-js";
 
-export interface Guild {
-  id: string;
-  moderators: string[];
-}
+const supabase = createClient<Database>(
+  `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co`,
+  process.env.SUPABASE_ANON_KEY!,
+);
 
-export async function insertGuild(guildId: string): Promise<Guild[]> {
-  if (!guildId) {
-    throw new Error("Guild ID is required for insertions");
+type Guild = Database["public"]["Tables"]["guilds"]["Row"];
+type GuildInsert = Database["public"]["Tables"]["guilds"]["Insert"];
+type GuildUpdate = Database["public"]["Tables"]["guilds"]["Update"];
+
+export async function insertGuild(data: GuildInsert): Promise<Guild> {
+  if (!data || Object.keys(data).length === 0) {
+    throw new Error("Insert data is required");
   }
 
   try {
-    const guilds = (await sql`
-      INSERT INTO guilds (id) VALUES (${guildId})
-      RETURNING *;
-      `) as Guild[];
+    const result = await supabase.from("guilds").insert(data).select().single();
 
-    return guilds;
+    if (result.error || !result.data) {
+      throw result.error || new Error("Guild not found");
+    }
+
+    return result.data;
   } catch (error) {
     throw new Error(
       `Failed to insert guild: ${error instanceof Error ? error.message : String(error)}`,
@@ -24,17 +30,23 @@ export async function insertGuild(guildId: string): Promise<Guild[]> {
   }
 }
 
-export async function getGuild(guildId: string): Promise<Guild[]> {
+export async function getGuild(guildId: string): Promise<Guild> {
   if (!guildId) {
     throw new Error("Guild ID is required for retrievals");
   }
 
   try {
-    const guilds = (await sql`
-      SELECT * FROM guilds WHERE id = ${guildId};
-      `) as Guild[];
+    const result = await supabase
+      .from("guilds")
+      .select()
+      .eq("id", guildId)
+      .single();
 
-    return guilds;
+    if (result.error || !result.data) {
+      throw result.error || new Error("Guild not found");
+    }
+
+    return result.data;
   } catch (error) {
     throw new Error(
       `Failed to retrieve guild: ${error instanceof Error ? error.message : String(error)}`,
@@ -44,19 +56,29 @@ export async function getGuild(guildId: string): Promise<Guild[]> {
 
 export async function updateGuild(
   guildId: string,
-  data: Partial<Guild>,
-): Promise<Guild[]> {
+  data: GuildUpdate,
+): Promise<Guild> {
   if (!guildId) {
     throw new Error("Guild ID is required for updates");
   }
 
-  try {
-    const guilds = (await sql`
-        UPDATE guilds SET ${sql(data, [])} WHERE id = ${guildId}
-        RETURNING *;
-        `) as Guild[];
+  if (!data || Object.keys(data).length === 0) {
+    throw new Error("Update data is required");
+  }
 
-    return guilds;
+  try {
+    const result = await supabase
+      .from("guilds")
+      .update(data)
+      .eq("id", guildId)
+      .select()
+      .single();
+
+    if (result.error || !result.data) {
+      throw result.error || new Error("Guild not found");
+    }
+
+    return result.data;
   } catch (error) {
     throw new Error(
       `Failed to update guild: ${error instanceof Error ? error.message : String(error)}`,
@@ -64,18 +86,24 @@ export async function updateGuild(
   }
 }
 
-export async function deleteGuild(guildId: string): Promise<Guild[]> {
+export async function deleteGuild(guildId: string): Promise<Guild> {
   if (!guildId) {
     throw new Error("Guild ID is required for deletions");
   }
 
   try {
-    const guilds = (await sql`
-      DELETE FROM guilds WHERE id = ${guildId}
-      RETURNING *;
-      `) as Guild[];
+    const result = await supabase
+      .from("guilds")
+      .delete()
+      .eq("id", guildId)
+      .select()
+      .single();
 
-    return guilds;
+    if (result.error || !result.data) {
+      throw result.error || new Error("Guild not found");
+    }
+
+    return result.data;
   } catch (error) {
     throw new Error(
       `Failed to delete guild: ${error instanceof Error ? error.message : String(error)}`,
