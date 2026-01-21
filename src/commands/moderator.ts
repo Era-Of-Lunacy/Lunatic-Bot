@@ -33,7 +33,7 @@ const command: Command = {
 
     if (
       interaction.user.id !== interaction.guild?.ownerId &&
-      !guild[0]?.moderators.includes(interaction.user.id)
+      !guild.moderators.includes(interaction.user.id)
     ) {
       await interaction.reply({
         content: "You don't have permission to use this command!",
@@ -42,9 +42,7 @@ const command: Command = {
       return;
     }
 
-    if (
-      guild[0]?.moderators.includes(interaction.options.getUser("user")!.id)
-    ) {
+    if (guild.moderators.includes(interaction.options.getUser("user")!.id)) {
       await interaction.reply({
         content: "User is already a moderator!",
         ephemeral: true,
@@ -55,17 +53,22 @@ const command: Command = {
     try {
       await updateGuild(interaction.guildId!, {
         moderators: [
-          ...guild[0]?.moderators!,
+          ...guild.moderators,
           interaction.options.getUser("user")!.id,
         ],
       });
+
+      await interaction.reply({
+        content: "Moderator added successfully!",
+        ephemeral: true,
+      });
     } catch (error) {
-      console.error(`Error updating guild ${interaction.guildId}`);
+      console.error(error);
+      await interaction.reply({
+        content: "Error adding moderator",
+        ephemeral: true,
+      });
     }
-    await interaction.reply({
-      content: "Moderator added successfully!",
-      ephemeral: true,
-    });
   },
 };
 
