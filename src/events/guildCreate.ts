@@ -6,7 +6,7 @@ export default {
   once: false,
   async execute(_, guild) {
     try {
-      insertGuild(guild.id);
+      insertGuild({ id: guild.id });
     } catch (error) {
       console.error(`Error inserting guild ${guild.id}`);
     }
