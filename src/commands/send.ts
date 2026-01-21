@@ -60,7 +60,7 @@ const command: Command = {
 
     if (
       interaction.user.id !== interaction.guild?.ownerId &&
-      !guild[0]?.moderators.includes(interaction.user.id)
+      guild.moderators.includes(interaction.user.id)
     ) {
       await interaction.reply({
         content: "You don't have permission to use this command!",
