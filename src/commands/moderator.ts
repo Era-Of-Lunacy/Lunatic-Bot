@@ -68,7 +68,6 @@ const command: Command = {
 
       await interaction.reply({
         embeds: [embed],
-        flags: MessageFlags.Ephemeral,
       });
       return;
     } else if (subcommand === "add") {
@@ -89,7 +88,6 @@ const command: Command = {
 
       await interaction.reply({
         content: "Moderator added successfully!",
-        flags: MessageFlags.Ephemeral,
       });
     } else if (subcommand === "remove") {
       if (!guild.moderators.includes(interaction.options.getUser("user")!.id)) {
@@ -108,7 +106,6 @@ const command: Command = {
 
       await interaction.reply({
         content: "Moderator removed successfully!",
-        flags: MessageFlags.Ephemeral,
       });
     }
   },
