@@ -1,6 +1,6 @@
 import { getGuild, updateGuild } from "@/db/guilds.js";
 import type { Command } from "@/handlers/command-handler.js";
-import { MessageFlags, SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 const command: Command = {
   data: new SlashCommandBuilder()
@@ -50,8 +50,24 @@ const command: Command = {
     }
 
     if (subcommand === "list") {
+      const embed = new EmbedBuilder()
+        .setTitle("Server Moderators")
+        .setDescription("The following users have moderator privileges:")
+        .setColor("#00AAFF")
+        .setTimestamp();
+
+      if (guild.moderators.length > 0) {
+        const moderatorList = guild.moderators.map((modId) => `<@${modId}>`);
+        embed.addFields({
+          name: "Moderators",
+          value: moderatorList.join("\n") || "No moderators found",
+        });
+      } else {
+        embed.setDescription("This server does not have any moderators yet.");
+      }
+
       await interaction.reply({
-        content: guild.moderators.join("\n"),
+        embeds: [embed],
         flags: MessageFlags.Ephemeral,
       });
       return;
