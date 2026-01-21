@@ -27,3 +27,6 @@ coverage # coverage directory
 
 # TypeScript cache file
 .tsbuildinfo
+
+# Supabase
+/supabase
