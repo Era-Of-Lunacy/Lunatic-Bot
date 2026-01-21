@@ -50,25 +50,17 @@ const command: Command = {
       return;
     }
 
-    try {
-      await updateGuild(interaction.guildId!, {
-        moderators: [
-          ...guild.moderators,
-          interaction.options.getUser("user")!.id,
-        ],
-      });
+    await updateGuild(interaction.guildId!, {
+      moderators: [
+        ...guild.moderators,
+        interaction.options.getUser("user")!.id,
+      ],
+    });
 
-      await interaction.reply({
-        content: "Moderator added successfully!",
-        ephemeral: true,
-      });
-    } catch (error) {
-      console.error(error);
-      await interaction.reply({
-        content: "Error adding moderator",
-        ephemeral: true,
-      });
-    }
+    await interaction.reply({
+      content: "Moderator added successfully!",
+      ephemeral: true,
+    });
   },
 };
 
