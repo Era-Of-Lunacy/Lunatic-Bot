@@ -6,11 +6,8 @@ import { loadEvents } from "./handlers/event-handler.js";
 if (
   !process.env.DISCORD_TOKEN ||
   !process.env.DISCORD_CLIENT_ID ||
-  !process.env.DB_HOST ||
-  !process.env.DB_PORT ||
-  !process.env.DB_DATABASE ||
-  !process.env.DB_USER ||
-  !process.env.DB_PASSWORD
+  !process.env.SUPABASE_PROJECT_ID ||
+  !process.env.SUPABASE_ANON_KEY
 ) {
   console.warn("Please set required environment variables");
   process.exit(1);
